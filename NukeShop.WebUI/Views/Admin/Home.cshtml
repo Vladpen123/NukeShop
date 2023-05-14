@@ -1,0 +1,118 @@
+﻿@using NukeShop.BLL.DTOs.ProductDtos;
+@model List<ProductDto>
+@{
+
+}
+
+<button id="showAddProductModal" class="btn btn-success" data-url="/Admin/AddProduct" data-bs-toggle="modal"
+   data-bs-target="#modal-add-product">Add Product</button>
+   <div id="addPartial">
+    <partial name="_AddProduct" model="new ProductViewModel()" />
+   </div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Name</th>
+            <th scope="col">Articul</th>
+            <th scope="col">Price</th>
+            <th scope="col">Count</th>
+            <th scope="col">Manufacturer</th>
+            <th scope="col">Category</th>
+            <th scope="col"></th>
+            
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td><img src="data:image/jpg;base64, @Convert.ToBase64String(p.Photo)" width="128" height="128"></td>
+                <td>@p.Name</td>
+                <td>@p.Articul</td>
+                <td>@p.Price.ToString("C")</td>
+                <td>@p.Count</td>
+                <td>@p.ManufacturerName</td>
+                <td>@p.CategoryName</td>
+                <td></td>
+             
+
+                <td>
+                    <a class="btn btn-danger" data-url="/Admin/DeleteProduct/{@p.Id}"
+                   data-bs-toggle="modal" data-bs-target="#modal-delete-product-@p.Id" id="@p.Id">
+                        Delete
+                    </a>
+   
+                <partial name="_DeleteProduct" model="@p" />
+         
+                </td>
+                <td>
+                    <button class="btn btn-warning" id="showEditProductModal" data-url="/Admin/EditProduct/" data-bs-toggle="modal"
+                        data-bs-target="#modal-edit-product-@p.Id">
+                        Edit
+                    </button>
+               
+                <div id="editPartial">
+                                    <partial name="_EditProduct" model="new ProductViewModel{ Id=p.Id, Articul=p.Articul, CategoryId=p.CategoryId,
+                                                                            Count=p.Count, Description=p.Description,
+                                                                            ManufacturerId=p.ManufacturerId, Name=p.Name, Photo=null, Price=p.Price}" />
+                </div>
+                </td>
+
+                <td><a class="btn btn-info" asp-action="DetailsProduct" data-url="/Admin/DetailsProduct/{@p.Id}">Details</a></td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
+@section scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+  <script>
+        $("#showEditProductModal").click(function(){
+            $('#modal-edit-product').modal('show');
+        })
+        $("#button").click(function(e){
+            e.preventsDefault();
+            var model = $('#editProductForm').serialize();
+            console.log(model);
+            $.ajax({
+                type: 'POST',
+                url: 'admin/Index',
+                async: false,
+                contentType: 'application/json',
+                data: model,
+                success: function(result){
+                    $('#editPartial').html(result);
+                    $('#modal-edit-product').modal('show');
+                }
+            });
+        })
+  </script>
+    <script>
+        $("#showAddProductModal").click(function () {
+            $('#modal-add-product').modal('show');
+        })
+        $("#button").click(function (e) {
+            e.preventsDefault();
+            var model = $('#addProductForm').serialize();
+            console.log(model);
+            $.ajax({
+                type: 'POST',
+                url: 'admin/Index',
+                async: false,
+                contentType: 'application/json',
+                        data: model,
+                success: function (result) {
+                    $('#addPartial').html(result);
+                    $('#modal-add-product').modal('show');
+                }
+            });
+        })
+    </script>
+ 
+}

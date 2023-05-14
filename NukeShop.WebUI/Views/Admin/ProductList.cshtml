@@ -1,0 +1,111 @@
+﻿@using NukeShop.BLL.DTOs
+@model PagingResponse<ProductDto>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<button id="showAddProductModal" class="btn btn-success" data-url="/Admin/AddProduct" data-bs-toggle="modal"
+        data-bs-target="#modal-add-product">
+    Add Product
+</button>
+<div id="addPartial">
+    <partial name="_AddProduct" model="new ProductViewModel()" />
+</div>
+
+
+
+    
+@if (!Model.Items!.Any())
+{
+    <h2>
+        The list of product is empty :(
+    </h2>
+}
+else
+{
+
+
+
+
+    <table class="table table-striped" style="max-height:300px">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col"></th>
+                <th scope="col">Name</th>
+
+                <th scope="col">Articul</th>
+
+
+                <th scope="col">Price</th>
+                <th scope="col">Count</th>
+                <th scope="col">Manufacturer</th>
+                <th scope="col">Category</th>
+                <th scope="col"></th>
+
+            </tr>
+        </thead>
+        <tbody id="scrollList">
+            <partial name="_ProductItems" />
+
+        </tbody>
+    </table>
+    <div id="loading">
+
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+
+    </div>
+
+}
+
+
+@section scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+    <script src="~/js/showAddProductModal.js"></script>
+    <script src="~/js/showEditProductModal.js"></script>
+
+    <script>
+        $(function () {
+
+            $('div#loading').hide();
+
+            var page = 1;
+            var _inCallback = false;
+            function loadItems() {
+                if (page > -1 && !_inCallback) {
+                    _inCallback = true;
+                    page++;
+                    $('div#loading').show();
+
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Admin/ProductList/' + page,
+                        success: function (data, textstatus) {
+                            if (data != '') {
+                                $("#scrollList").append(data);
+                            }
+                            else {
+                                page = -1;
+                            }
+                            _inCallback = false;
+                            $("div#loading").hide();
+                        }
+                    });
+                }
+            }
+            // обработка события скроллинга
+            $(window).scroll(function () {
+                if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+
+                    loadItems();
+                }
+            });
+        })
+    </script>
+
+
+}

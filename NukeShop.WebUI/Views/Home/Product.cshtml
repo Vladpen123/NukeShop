@@ -1,0 +1,49 @@
+﻿@model NukeShop.BLL.DTOs.ProductDtos.ProductDto
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="data:image/jpg;base64, @Convert.ToBase64String(Model.Photo)" width="480" height="480" class="img-fluid" alt="@Model.Name">
+        </div>
+        <div class="col-md-6">
+            <h2>@Model.ManufacturerName @Model.Name</h2>
+            <p>@Model.Description</p>
+            <h3>$@Model.Price</h3>
+
+            <form asp-route-id="@Model?.Id" asp-page="/Cart"  method="post">
+                <input type="hidden" >
+                <input type="hidden" name="returnUrl" value="@ViewContext.HttpContext.Request.PathAndQuery()">
+            
+
+
+                <div class="mb-3">
+                    <label for="size" class="form-label">Select Size</label>
+                    <div class="d-flex flex-wrap justify-content-start">
+                        @for (float i = 6; i < 14; i += 0.5f)
+                        {
+                            if (i == 10.5f)
+                            {
+                                <div class="btn btn-outline-secondary btn w-16 m-1 active">@i</div>
+                            }
+                            else if (i <= 7.5f)
+                            {
+                                <div class="btn btn-outline-secondary btn w-16 m-1 disabled">@i</div>
+                            }
+                            else
+                            {
+                                <div class="btn btn-outline-secondary btn w-16 m-1">@i</div>
+                            }
+
+                        }
+
+                    </div>
+                </div>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button type="submit" class="btn btn-outline-dark"><i class="fa fa-cart-plus"></i> Add to cart</button>
+                    <button type="submit" class="btn btn-outline-dark"><i class="far fa-heart"></i> Favourite</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

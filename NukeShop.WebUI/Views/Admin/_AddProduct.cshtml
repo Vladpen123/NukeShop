@@ -1,0 +1,86 @@
+﻿@using NukeShop.BLL.DTOs.ProductDtos;
+@using NukeShop.WebUI.ViewModels;
+@model ProductViewModel
+@{
+}
+<div aria-hidden="true" aria-labelledby="modal-add-product-label"
+     role="dialog" tabindex="-1" id="modal-add-product" class="modal fade">
+    <div class="modal-dialog">
+
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Добавить новый товар</h5>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form asp-antiforgery="true" asp-action="AddProduct" method="post" class="needs-validation" enctype="multipart/form-data">
+                <div class="modal-body ">
+
+                    <div class="form-group">
+
+                        <label asp-for="Name" class="col-form-label">Название</label>
+                        <input asp-for="Name" class="form-control" placeholder="Название" required />
+                        <div>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <label asp-for="Articul">Артикул</label>
+                        <input asp-for="Articul" class="form-control" placeholder="Артикул" required />
+                        <div>
+                            <span asp-validation-for="Articul" class="text-danger"></span>
+                        </div>
+
+
+                        <label asp-for="Price">Цена</label>
+                        <input asp-for="Price" id="productCount" class="form-control" placeholder="0.00" required />
+                        <div>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+
+                        <label asp-for="Description">Описание</label>
+                        <textarea asp-for="Description" class="form-control"></textarea>
+
+
+                        <label asp-for="Count">Количество</label>
+                        <input asp-for="Count" min="0" class="form-control" placeholder="Количество" required />
+                        <div>
+                            <span asp-validation-for="Count" class="text-danger"></span>
+                        </div>
+
+                        <label>Категория</label>
+                        <select asp-for="CategoryId" asp-items="@ViewBag.Cats as SelectList" class="form-select" required></select>
+                        <div>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <label>Производитель</label>
+                        <select asp-for="ManufacturerId" asp-items="@ViewBag.Mans as SelectList" class="form-select" required></select>
+                        <div>
+                            <span asp-validation-for="ManufacturerId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Photo" class="form-label">Фото товара</label>
+                            <input asp-for="Photo" class="form-control" type="file" accept="image/png, image/jpeg">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Добавить товар</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

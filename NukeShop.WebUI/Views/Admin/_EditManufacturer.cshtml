@@ -1,0 +1,49 @@
+﻿@using NukeShop.BLL.DTOs.ProductDtos;
+@using NukeShop.WebUI.ViewModels;
+@model ManufacturerViewModel
+@{
+}
+<div aria-hidden="true" aria-labelledby="modal-edit-manufacturer-label-@Model.Id"
+     role="dialog" tabindex="-1" id="modal-edit-manufacturer-@Model.Id" class="modal fade">
+    <div class="modal-dialog">
+
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Edit manufacturer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form asp-antiforgery="true" asp-action="EditManufacturer" method="post" class="needs-validation" enctype="multipart/form-data">
+                <div class="modal-body ">
+
+                    <div class="form-group">
+
+                        <input asp-for="Id" type="hidden" required />
+
+                        <label asp-for="Name" class="col-form-label"></label>
+                        <input asp-for="Name" class="form-control" placeholder="Name" required />
+                        <div>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Edit manufacturer</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">Отмена</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

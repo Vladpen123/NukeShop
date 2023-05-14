@@ -1,0 +1,43 @@
+﻿@model ManufacturerDto
+
+Manufacturer
+
+<h1>@Model.Name</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Name</th>
+            <th scope="col">Articul</th>
+            <th scope="col">Price</th>
+            <th scope="col">Count</th>
+            <th scope="col">Manufacturer</th>
+            <th scope="col">Manufacturer</th>
+            <th scope="col"></th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var p in Model.Products)
+        {
+            <tr>
+                <td>
+                    <img src="data:image/jpg;base64, @Convert.ToBase64String((p.Photo!))"
+                    width="128" 
+                    height="128">
+                </td>
+                <td>@p.Name</td>
+                <td>@p.Articul</td>
+                <td>@p.Price.ToString("C")</td>
+                <td>@p.Count</td>
+                <td>@p.ManufacturerName</td>
+                <td>@p.ManufacturerName</td>
+                <td></td>
+
+
+            </tr>
+        }
+
+    </tbody>
+</table>

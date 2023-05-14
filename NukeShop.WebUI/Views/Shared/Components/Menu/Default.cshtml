@@ -1,0 +1,190 @@
+﻿@model MenuViewModel
+
+@*<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">*@
+<style>
+    #slider {
+        margin-top: 20px;
+    }
+
+
+    .ui-slider .ui-slider-handle {
+        border-radius: 50%;
+        width: 1.8em;
+        height: 1.8em;
+        background-color: #007bff;
+        border: 2px solid #007bff;
+        margin-top: -0.3em;
+    }
+
+
+
+    #ui-slider-range .ui-corner-all .ui-widget-header {
+        background: #0d6efd;
+    }
+
+    .slider-handle:focus {
+        background-color: #007bff;
+        box-shadow: 0px 0px 8px #007bff;
+        margin-top: -0.3em;
+    }
+</style>
+<div id="menu">
+
+    <form id="menuForm">
+        <ul class="list-group list-group-flush">
+
+            <li class="list-group-item">
+                <p>
+                    <a class="text-black dropdown-toggle" data-bs-toggle="collapse" href="#collapseCategory"
+                       role="button" aria-expanded="true"
+                       aria-controls="collapseCategory">
+                        Categories
+                    </a>
+
+                    <div class="collapse show" id="collapseCategory">
+                        @foreach (var c in Model.Categories)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" name="categoryName" type="checkbox" value="@c.Name" id="category-@c.Id">
+                                <label class="form-check-label" for="category-@c.Id"> @c.Name</label>
+                            </div>
+                        }
+                    </div>
+                </p>
+            </li>
+            <li class="list-group-item">
+                <p>
+                    <a class="text-black dropdown-toggle show" data-bs-toggle="collapse" href="#collapseManufacturers"
+                       role="button" aria-expanded="true"
+                       aria-controls="collapseManufacturers">
+                        Manufacturers
+                    </a>
+
+                    <div class="collapse show" id="collapseManufacturers">
+
+                        @foreach (var m in Model.Manufacturers)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" name="manufacturerName" type="checkbox" value="@m.Name" id="manufacturer-@m.Id">
+                                <label class="form-check-label" for="manufacturer-@m.Id"> @m.Name</label>
+                            </div>
+                        }
+                    </div>
+
+                </p>
+            </li>
+
+            <li class="list-group-item">
+
+                <div class="row d-flex justify-content-center align-items-center">
+                    <div class="col-5">
+                        <input type="text" class="form-control small" id="minPrice" name="priceFrom" value="0">
+                    </div>
+
+                    -
+
+                    <div class="col-5">
+                        <input type="text" class="form-control" id="maxPrice" name="priceTo" value="400">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div id="slider"></div>
+                    </div>
+                </div>
+            </li>
+
+
+            <li class="list-group-item">
+                <button class="btn btn-secondary" type="submit">
+                    Search
+                </button>
+            </li>
+        </ul>
+
+
+
+
+    </form>
+
+
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Проверка, что querystring пустой
+        if (location.search === "") {
+            // Сброс всех флажков
+            $('input[type="checkbox"]').prop('checked', false);
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Получаем сохраненные значения слайдера, если они есть
+        var savedMinPrice = localStorage.getItem("minPrice");
+        var savedMaxPrice = localStorage.getItem("maxPrice");
+
+        // Устанавливаем значения слайдера из сохраненных значений или по умолчанию
+        var minPrice = (savedMinPrice == null) ? 0 : parseInt(savedMinPrice);
+        var maxPrice = (savedMaxPrice == null) ? 100 : parseInt(savedMaxPrice);
+
+        // Устанавливаем начальные значения для инпутов
+        $("#minPrice").val(minPrice);
+        $("#maxPrice").val(maxPrice);
+
+        // Инициализируем слайдер
+        $("#slider").slider({
+            range: true,
+            min: 0,
+            max: 1000,
+            values: [minPrice, maxPrice],
+            slide: function (event, ui) {
+                $("#minPrice").val(ui.values[0]);
+                $("#maxPrice").val(ui.values[1]);
+                $("#priceRange").val(ui.values[0] + " - " + ui.values[1]);
+            },
+            change: function (event, ui) {
+                // Сохраняем новые значения слайдера в localStorage
+                localStorage.setItem("minPrice", ui.values[0]);
+                localStorage.setItem("maxPrice", ui.values[1]);
+            }
+        });
+
+        // Устанавливаем начальное значение для поля с диапазоном цен
+        $("#priceRange").val($("#slider").slider("values", 0) +
+            " - " + $("#slider").slider("values", 1));
+
+
+    });
+</script>
+<script>
+    var checkboxValues = JSON.parse(localStorage.getItem('checkboxValues')) || {},
+        $checkboxes = $("#menu :checkbox");
+
+
+    $checkboxes.on("change", function () {
+        $checkboxes.each(function () {
+            checkboxValues[this.id] = this.checked;
+        });
+
+        localStorage.setItem("checkboxValues", JSON.stringify(checkboxValues));
+    });
+
+
+
+
+    // On page load
+    $.each(checkboxValues, function (key, value) {
+        $("#" + key).prop('checked', value);
+    });
+
+
+
+</script>
+

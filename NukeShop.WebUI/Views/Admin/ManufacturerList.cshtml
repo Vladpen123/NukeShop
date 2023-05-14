@@ -1,0 +1,90 @@
+﻿@model List<ManufacturerDto>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<button id="showAddManufacturerModal" class="btn btn-success" data-url="/Admin/AddManufacturer" data-bs-toggle="modal"
+        data-bs-target="#modal-add-manufacturer">
+    Add Manufacturer
+</button>
+<div id="addPartial">
+    <partial name="_AddManufacturer" model="new ManufacturerViewModel()" />
+</div>
+
+
+@if (Model == null)
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+}
+else if (!Model.Any())
+{
+    <h2>
+        The list of manufacturers is empty :(
+    </h2>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col"></th>
+
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var m in Model)
+            {
+                <tr>
+
+                    <td>@m.Id</td>
+                    <td>@m.Name</td>
+
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-danger" data-url="/Admin/DeleteManufacturer/{@m.Id}"
+                            data-bs-toggle="modal" data-bs-target="#modal-delete-manufacturer-@m.Id"
+                            id="@m.Id">
+                                Delete
+                            </button>
+                            <partial name="_DeleteManufacturer" model="@m" />
+
+                            <button class="btn btn-warning" id="showEditManufacturerModal"
+                            data-url="/Admin/ManufacturerCategory/" data-bs-toggle="modal"
+                            data-bs-target="#modal-edit-manufacturer-@m.Id">
+                                Edit
+                            </button>
+
+                            <div id="editPartial">
+                                <partial name="_EditManufacturer" model="new ManufacturerViewModel{ Id=m.Id, Name=m.Name,}" />
+                            </div>
+
+
+
+                            <button class="btn btn-info" asp-action="ManufacturerDetails"
+                            asp-route-id="@m.Id" data-url="/Admin/ManufacturerDetails/{@m.Id}">
+                                Details
+                            </button>
+                        </div>
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+}
+@section scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+    <script src="~/js/showAddManufacturerModal.js"></script>
+    <script src="~/js/showEditManufacturerModal.js"></script>
+
+
+}

@@ -1,0 +1,85 @@
+﻿@model List<CategoryDto>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<button id="showAddCategoryModal" class="btn btn-success" data-url="/Admin/AddCategory" data-bs-toggle="modal"
+        data-bs-target="#modal-add-category">
+    Add Category
+</button>
+<div id="addPartial">
+    <partial name="_AddCategory" model="new CategoryViewModel()" />
+</div>
+
+
+@if (Model == null)
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+}
+else if(Model.Count()==0)
+{
+    <h2>
+        The list of categories is empty :(
+    </h2>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col"></th>
+
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var c in Model)
+            {
+                <tr>
+
+                    <td>@c.Id</td>
+                    <td>@c.Name</td>
+                    <td>
+                        <div class="btn-group" role="group">
+
+                            <a class="btn btn-danger" data-url="/Admin/DeleteCategory/{@c.Id}"
+                            data-bs-toggle="modal" data-bs-target="#modal-delete-category-@c.Id" id="@c.Id">
+                                Delete
+                            </a>
+                            <partial name="_DeleteCategory" model="@c" />
+
+                            <a class="btn btn-warning" id="showEditCategoryModal" data-url="/Admin/EditCategory/" data-bs-toggle="modal"
+                            data-bs-target="#modal-edit-category-@c.Id">
+                                Edit
+                            </a>
+
+                            <div id="editPartial">
+                                <partial name="_EditCategory" model="new CategoryViewModel{ Id=c.Id, Name=c.Name,}" />
+                            </div>
+
+                            <a class="btn btn-info" asp-action="CategoryDetails" asp-route-id="@c.Id"
+                            data-url="/Admin/CategoryDetails/{@c.Id}">
+                                Details
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+@section scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+    <script src="~/js/showAddCategoryModal.js"></script>
+    <script src="~/js/showEditCategoryModal.js"></script>
+
+
+}
